@@ -1,0 +1,59 @@
+{%extends 'base.html'%}
+{%block content%}
+<div class="container">
+    <h1 class='d-5 py-5 display-3 text-center'>All tweets</h1>
+    <!-- Use ajax to extract tweet list -->
+    <div id="tweet-container">
+        {%for tweet in user.tweet_set.all%}
+        <div class="row mt-5">
+            <div class="col-sm-3">
+                <p class="mb-0 text-center">{{tweet.author}}</p>
+                <p class="text-center">{{tweet.created_date}}</p>
+            </div>
+            <div class="col-sm-9">
+                <div class="media">
+                    <div class="media-body">
+                        <p class="mb-0 ">{{tweet.content}}(<a href="#">View</a>)</p>
+                        </p>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+        {%endfor%}
+
+
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <h2>Following <small>({{object.profile.get_following.count}})</small></h2>
+                {%if object.profile.get_following%}
+                <ul>
+                    {%for object in object.profile.get_following%}
+                    <li><a href="{%url 'profile_app:user_detail' username=object.username%}">{{object.username}}</a></li>
+                    {%endfor%}
+                </ul>
+
+                {%else%}
+                <p>Not following anyone</p>
+                {%endif%}
+
+            </div>
+
+            <div class="col-12">
+                <h2>Followed By <small>({{object.followed_by.all.count}})</small></h2>
+                {%if object.followed_by.all%}
+                <ul>
+                    {%for profile in object.followed_by.all%}
+                    {{profile}}-{{profile.user.id}}
+                    <li><a href="{%url 'profile_app:user_detail' username=profile.user.username%}">{{profile.user.username}}</a></li>
+                    {%endfor%}
+                </ul>
+                {%else%}
+                <p>No one follows</p>
+                {%endif%}
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
