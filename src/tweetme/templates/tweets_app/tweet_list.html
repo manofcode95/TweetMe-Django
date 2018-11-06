@@ -5,119 +5,8 @@
 
 {%block script%}
 <script>
-    // this functions helps you get the search query q
-    function getParameterByName(name, url) {
-        if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, '\\$&');
-        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-            results = regex.exec(url);
-        if (!results) return null;
-        if (!results[2]) return '';
-        return decodeURIComponent(results[2].replace(/\+/g, ' '));
-    }
-
     $(document).ready(function () {
-        console.log('working');
-        var query = getParameterByName('q')
-        var tweetList = []
-        function attachTweet(tweetValue, prepend) {
-            var tweetAuthor = tweetValue.author.username;
-            var tweetContent = tweetValue.content;
-            var tweetDate = tweetValue.time_display;
-            var tweetAuthorUrl = tweetValue.url;
-            var tweetHTML = '<div class="row mt-5"><div class= "col-sm-3" ><p class="mb-0 text-center"><a href="' + tweetAuthorUrl + '">' + tweetAuthor + '</a></p><p class="text-center">' + tweetDate + '</p></div><div class="col-sm-9"><div class="media"><div class="media-body"><p class="mb-0 ">' + tweetContent + '(<a href="#">View</a>)</p></p></div> </div><hr></div></div >'
-            if (prepend == true) {
-                $("#tweet-container").prepend(tweetHTML)
-            } else {
-                $("#tweet-container").append(tweetHTML)
-            }
-        }
-        function parseTweets() {
-            if (tweetList == 0) {
-                $(" #tweet-container").text('No tweets currently found.')
-            } else {
-                $.each(tweetList, function (key, value) {
-                    // console.log(value)
-                    attachTweet(value)
-
-                })
-            }
-        }
-
-        var nextTweetUrl;
-        function fetchTweet(url) {
-            var fetchUrl;
-            if (!url) {
-                fetchUrl = "/api/tweet/"
-            } else {
-                fetchUrl = url
-            }
-            $.ajax({
-                url: fetchUrl,
-                data: { "q": query },
-                method: "GET",
-
-                success: function (data) {
-                    tweetList = data.results
-                    if (data.next) { nextTweetUrl = data.next } else { $("#loadmore").css('display', 'none') }
-                    parseTweets()
-                },
-                error: function (data) {
-                    console.log('error')
-                },
-            });
-        }
-        fetchTweet()
-
-        $("#loadmore").click(function (event) {
-            event.preventDefault()
-            if (nextTweetUrl) { fetchTweet(nextTweetUrl) }
-        })
-
-        var charsStart = 150
-        var charsCurrent = 0
-        $("#form_id").append("<span id='tweetCharLeft'>" + charsStart + "</span>")
-
-        $("#form_id textarea").keyup(function (event) {
-            charsCurrent = charsStart - $(this).val().length
-            var charTag = $("#tweetCharLeft")
-            charTag.text(charsCurrent)
-            if (charsCurrent > 0) {
-                charTag.addClass('green-text')
-            } else if (charsCurrent == 0) {
-                charTag.removeClass('green-text')
-            } else if (charsCurrent < 0) {
-                charTag.addClass('red-text')
-            }
-
-        })
-
-
-        $("#form_id").submit(function (event) {
-            event.preventDefault()
-            var this_ = $(this)
-            var formData = this_.serialize()
-            if (charsCurrent >= 0) {
-                $.ajax({
-                    url: "/api/tweet/create/",
-                    data: formData,
-                    method: "POST",
-
-                    success: function (data) {
-                        console.log(charsCurrent)
-                        this_.find("textarea").val("")
-                        attachTweet(data, true)
-                    },
-                    error: function (data) {
-                        console.log("error")
-                    }
-                })
-            } else {
-                console.log('Cannot send')
-            }
-        })
-
-
+        loadTweetContainer("tweet-container")
     })
 </script>
 
@@ -137,7 +26,7 @@
     <hr class='mt-5'>
 
     <!-- Use ajax to extract tweet list -->
-    <div id="tweet-container"></div>
+    <div id="tweet-container" data-url="/api/tweet/"></div>
 
     <div class="row my-2">
         <div class="col-sm-3">

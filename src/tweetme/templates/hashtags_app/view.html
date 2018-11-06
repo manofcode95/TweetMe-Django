@@ -1,0 +1,24 @@
+{%extends 'base.html'%}
+{%block content%}
+<div class="container">
+    <h1 class='d-5 py-5 display-3 text-center'>All tweets</h1>
+    <!-- Use ajax to extract tweet list -->
+    <div id="tweet-container">
+        {%for tweet in object.get_tweets%}
+        <div class="row mt-5">
+            <div class="col-sm-3">
+                <p class="mb-0 text-center">{{tweet.author}}</p>
+                <p class="text-center">{{tweet.created_date}}</p>
+            </div>
+            <div class="col-sm-9">
+                <div class="media">
+                    <div class="media-body">
+                        <p class="mb-0 ">{{tweet.content}}(<a href="#">View</a>)</p>
+                        </p>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+        {%endfor%}
+        {%endblock%}

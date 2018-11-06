@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'tweets_app',
     'account_app',
+    'hashtags_app',
 ]
 
 REST_FRAMEWORK = {

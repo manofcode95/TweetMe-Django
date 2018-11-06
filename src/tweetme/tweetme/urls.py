@@ -20,13 +20,20 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from tweets_app import views
 from .views import user_login, user_register, user_logout
+from hashtags_app.views import HashTagView
 urlpatterns = [
     # url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
-    url(r'^$', views.home1, name='home'),
+    url(r'^$', views.TweetList.as_view(), name='home'),
     url(r'^admin/', admin.site.urls),
+    # tweets_app
     url(r'^tweet/', include('tweets_app.urls')),
-    url(r'^profile/', include('account_app.urls')),
     url(r'^api/tweet/', include('tweets_app.api.urls', namespace='tweet-api')),
+    # account_app
+    url(r'^profile/', include('account_app.urls')),
+    url(r'^api/', include('account_app.api.urls')),
+    # hashtags_app
+    url(r'^tags/(?P<hashtag>[\w-]+)/$', HashTagView.as_view(), name='hashtag'),
+    # login,logout,register
     url(r'^login/$', user_login, name='login'),
     url(r'^register/$', user_register, name='register'),
     url(r'logout/$', user_logout, name='logout'),

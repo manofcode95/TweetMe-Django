@@ -81,3 +81,52 @@ class UserProfile(models.Model):
         return str(self.following.all())
 18. don't know what it's able to call .count function
 Followed By ({{object.followed_by.all.count}})
+
+19. You can use HttpResponseRedirect or redirect to redirect url
+url=reverse_lazy('profile_app:user_detail', kwargs={'username':username})
+HttpResponseRedirect(url)
+or
+redirect(reverse_lazy('profile_app:user_detail', kwargs={'username':username}))
+or
+redirect('profile_app:user_detail', username=username)
+
+20. user_profile, created= UserProfile.objects.get_or_create(user=request.user)
+created==True means object had not been created unitl now.
+created==False means objects has already been created.
+
+21. create self object from models.manager: obj=self.model(field=value...)->obj.save()
+or you can use <Model>.objects.create
+
+22. 2 models cannot import each other-->
+from tweet.models import hashtag
+from hastag.models import tweet
+
+23. This is how signal works:
+if you want to create tag page everytime after posting a tweet:
+    #  create signal to get the information you want
+
+    hashtags_app.signal: parsed_hashtags=Signal(providing_args=['hashtag_list']) 
+
+    #  connect receiver function: it will get that signal and handel it
+    def parsed_hashtags_receiver(sender, hashtag_list, *args, **kwargs):
+    if len(hashtag_list)>=1:
+        for tag in hashtag_list:
+            HashTag.objects.get_or_create(tag=tag)
+
+    parsed_hashtags.connect(parsed_hashtags_receiver)
+
+    # connect to signals sent. Everytime run the signal, they know where to send to
+    def tweet_save_receiver(sender, instance, created, **kwargs):
+    if created and not instance.parent:
+
+        hash_regex=r'#(?P<hashtag>[\w]+)'
+        hashtags=re.findall(hash_regex,content)
+        parsed_hashtags.send(sender=instance.__class__, hashtag_list= hashtags )
+
+    post_save.connect(tweet_save_receiver, sender=Tweet)
+
+
+23. In Jquery: 
+$(".btn-like").on(...)
+var this_ = $(this): will only change that specific class
+$(".btn-like").fucntion: will change all the values in that class
