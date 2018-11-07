@@ -24,14 +24,6 @@ class TweetManager(models.Manager):
         obj.save()
         return obj
 
-    # def is_liked(self, user, tweet_obj):
-    #     if tweet_obj in user.liked.all():
-    #         like=False
-    #         tweet_obj.like.remove(user)
-    #     else:
-    #         like=True
-    #         tweet_obj.like.add(user)
-    #     return like
         
     def like_toggle(self, user, tweet_obj):
         if user in tweet_obj.like.all():
@@ -46,6 +38,7 @@ class Tweet(models.Model):
     author = models.ForeignKey(get_user_model(),on_delete=models.CASCADE,)
     content = models.TextField(max_length=140, validators=[validate.validate_content])
     like=models.ManyToManyField(get_user_model(), blank=True, related_name='liked')
+    reply = models.BooleanField(verbose_name="Is this a reply", default=False)
     updated_date = models.DateTimeField(auto_now=True)
     created_date = models.DateTimeField(auto_now_add=True)
     objects=TweetManager()
@@ -72,9 +65,4 @@ def tweet_save_receiver(sender, instance, created, **kwargs):
 
         hash_regex=r'#(?P<hashtag>[\w]+)'
         hashtags=re.findall(hash_regex,content)
-        print(hashtags)
-        print(4)
-        parsed_hashtags.send(sender=instance.__class__, hashtag_list= hashtags )
-        print(3)
-        # HashTag.objects.get_or_create(tag=)
 post_save.connect(tweet_save_receiver, sender=Tweet)

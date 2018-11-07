@@ -12,8 +12,45 @@
         crossorigin="anonymous">
     <link rel="stylesheet" href="{%static 'css/style.css'%}">
 
-    <!-- fetch tweet -->
+
+</head>
+
+<body>
+    {%include 'navbar.html'%}
+    {%block content%} {%endblock%}
+    {%include 'tweets_app/replymodal.html'%}
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src='{%static "js/bootstrap.js"%}'> </script>
+    {%block script%}{%endblock script%}
     <script>
+        $(document).ready(function () {
+            var typingTimer;
+            var doneInterval = 1500;
+            var searchInput = $("#navbar-search-form input[type=search]");
+            var searchQuery;
+
+            searchInput.keyup(function (event) {
+                searchQuery = $(this).val()
+                typingTimer = setTimeout(doneSearchTyping, doneInterval)
+
+            })
+
+
+            function doneSearchTyping() {
+                if (searchQuery) {
+                    var url = '/tweet/list/?q=' + searchQuery
+                    document.location.href = url;
+                }
+            }
+        })
+
+        // < !--fetch tweet-- >
+
         // this functions helps you get the search query q
         function getParameterByName(name, url) {
             if (!url) url = window.location.href;
@@ -96,6 +133,16 @@
                 })
             })
 
+            // Reply tweet
+            $(document.body).on("click", ".reply-btn", function (event) {
+                event.preventDefault()
+                var this_ = $(this)
+                var parentId = this_.attr('data-id')
+                var username = this_.attr('data-user')
+                $("#replyModal").modal({})
+
+
+            })
 
             // format the tweets
             function formatTweet(tweetValue) {
@@ -105,15 +152,22 @@
 
                 // check if the tweet was retweeted
                 var preContent = ''
-                if (tweetValue.parent) {
-                    var preContent = '<p class="mb-0 gray-text font-italic ">Retweet via <a href="' + tweetValue.parent.author_url + '">' + tweetValue.parent.author.username + '</a></p>'
+                var isReply = tweetValue.reply
+                if (tweetValue.parent && !isReply) {
+                    tweetValue.pk = tweetValue.parent.pk
+                    tweetValue.like_count = tweetValue.parent.like_count
+                    preContent = '<p class="mb-0 gray-text font-italic ">Retweet via <a href="' + tweetValue.parent.author_url + '">' + tweetValue.parent.author.username + '</a></p>'
+                } else if (tweetValue.parent && isReply) {
+                    tweetValue.pk = tweetValue.parent.pk
+                    tweetValue.like_count = tweetValue.parent.like_count
+                    preContent = '<p class="mb-0 gray-text font-italic ">Reply to @<a href="' + tweetValue.parent.author_url + '">' + tweetValue.parent.author.username + '</a></p>'
                 }
 
                 // author box
                 var tweetAuthorContent = '<div class= "col-sm-3" ><p class="mb-0 text-center"><a href="' + tweetValue.author_url + '">' + tweetValue.author.username + '</a></p><p class="text-center mb-0">' + tweetValue.time_display + '</p></div>'
 
                 // tweet box
-                var tweetContent = '<div class="col-sm-9"><div class="media"><div class="media-body">' + preContent + '<p class="mb-0 align-middle ">' + tweetValue.content + '(<a href="' + tweetValue.content_url + '">View</a> | <a class="retweet" href="' + tweetValue.retweet_url + '">Retweet</a> | <a class="like-btn" data-id="' + tweetValue.pk + '" href="#">' + verbLike + '(' + tweetValue.like_count + '</a>)</p></div></div></div>'
+                var tweetContent = '<div class="col-sm-9"><div class="media"><div class="media-body">' + preContent + '<p class="mb-0 align-middle ">' + tweetValue.content + '(<a href="' + tweetValue.content_url + '">View</a> | <a class="retweet" href="' + tweetValue.retweet_url + '">Retweet</a> | <a class="like-btn" data-id="' + tweetValue.pk + '" href="' + tweetValue.pk + '">' + verbLike + '(' + tweetValue.like_count + '</a>) | <a class="reply-btn" data-id="' + tweetValue.pk + '" data-user ="' + tweetValue.author + '" href="#">Reply</a>)</p></div></div></div>'
 
                 var container = '<div class="row my-3">' + tweetAuthorContent + tweetContent + '</div><div class="row"><div class="col-3"></div><div class="col-9"><hr></div></div>'
                 return container
@@ -221,42 +275,6 @@
                 }
             })
         }
-    </script>
-</head>
-
-<body>
-    {%block content%} {%endblock%}
-
-
-
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-    <script src='{%static "js/bootstrap.js"%}'> </script>
-    {%block script%}{%endblock script%}
-    <script>
-        $(document).ready(function () {
-            var typingTimer;
-            var doneInterval = 1500;
-            var searchInput = $("#navbar-search-form input[type=search]");
-            var searchQuery;
-
-            searchInput.keyup(function (event) {
-                searchQuery = $(this).val()
-                typingTimer = setTimeout(doneSearchTyping, doneInterval)
-
-            })
-
-
-            function doneSearchTyping() {
-                if (searchQuery) {
-                    var url = '/tweet/list/?q=' + searchQuery
-                    document.location.href = url;
-                }
-            }
-        })
-
 
     </script>
 </body>

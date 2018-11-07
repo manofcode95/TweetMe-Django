@@ -28,6 +28,8 @@ urlpatterns = [
     # tweets_app
     url(r'^tweet/', include('tweets_app.urls')),
     url(r'^api/tweet/', include('tweets_app.api.urls', namespace='tweet-api')),
+    # reply_app
+    # url(r'^reply/', include('reply_app.api.urls')),
     # account_app
     url(r'^profile/', include('account_app.urls')),
     url(r'^api/', include('account_app.api.urls')),
