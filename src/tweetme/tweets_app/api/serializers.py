@@ -38,10 +38,12 @@ class TweetModelSerializer(serializers.ModelSerializer):
     content_url=serializers.SerializerMethodField()
     parent=ParentTweetModelSerializer(read_only=True)
     retweet_url= serializers.SerializerMethodField()
-    
+    like_count= serializers.SerializerMethodField()
+    did_like = serializers.SerializerMethodField()
+
     class Meta:
         model=Tweet
-        fields=['author','content', 'time_display', 'author_url', 'content_url', 'parent', 'pk', 'retweet_url']
+        fields=['author','content', 'time_display', 'author_url', 'content_url',  'pk', 'retweet_url', 'like_count', 'did_like', 'parent']
 
     def get_time_display(self, obj):
         date_display= obj.created_date.strftime("%d %B")
@@ -59,3 +61,12 @@ class TweetModelSerializer(serializers.ModelSerializer):
     
     def get_retweet_url(self, obj):
         return reverse_lazy('api_tweet:api_retweet', kwargs={'pk':obj.pk}) 
+    
+    def get_like_count(self, obj):
+        return obj.like.all().count()
+
+    def get_did_like(self, obj):
+        currentuser=self.context.get('currentuser')
+        if currentuser in obj.like.all():
+            return True
+        return False

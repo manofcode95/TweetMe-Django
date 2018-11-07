@@ -130,3 +130,15 @@ if you want to create tag page everytime after posting a tweet:
 $(".btn-like").on(...)
 var this_ = $(this): will only change that specific class
 $(".btn-like").fucntion: will change all the values in that class
+
+24. To pass context from Views to Serializer:
+in Views:
+   def get_serializer_context(self, *args, **kwargs):
+        context=super(TweetListAPIView, self).get_serializer_context(*args, **kwargs)
+        context['request']=self.request
+        return context
+
+In Serializer:
+    def get_did_like(self, obj):
+        request=self.context.get('request')
+        user=request.user

@@ -33,7 +33,10 @@ class RetweetAPIView(APIView):
     permission_classes=[permissions.IsAuthenticatedOrReadOnly]
     def get(self, request, pk, format=None):
         tweet_qs=Tweet.objects.filter(pk=pk)
-        retweeted = Tweet.objects.filter(author=request.user, content=tweet_qs.first().content)
+        print(tweet_qs)
+        print(tweet_qs.first())
+        print(tweet_qs.first().pk)
+        retweeted = Tweet.objects.filter(author=request.user, pk=tweet_qs.first().pk)
         if tweet_qs.exists() and not retweeted.exists():
             new_tweet=Tweet.objects.retweet(retweet_user=request.user, parent_obj=tweet_qs.first())
             data=TweetModelSerializer(new_tweet).data
@@ -68,7 +71,10 @@ class TweetListAPIView(generics.ListAPIView):
         return qs  
 
 
-    
+    def get_serializer_context(self, *args, **kwargs):
+        context=super(TweetListAPIView, self).get_serializer_context(*args, **kwargs)
+        context['currentuser']=self.request.user
+        return context
 
 
     
