@@ -61,7 +61,7 @@
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
-        function loadTweetContainer(tweetContainerId) {
+        function loadTweetContainer(tweetContainerId, fetchOne) {
             var query = getParameterByName('q');
             var tweetList = [];
             var createApiTweet = "/api/tweet/create/";
@@ -206,6 +206,7 @@
             }
 
             var nextTweetUrl;
+            // fetch all tweets
             function fetchTweet(url) {
                 var fetchUrl;
                 if (!url) {
@@ -229,7 +230,32 @@
                     },
                 });
             }
-            fetchTweet()
+
+            // fetch  tweet detail
+            function fetchSingle(fetchOne) {
+                var fetchUrl='/api/tweet/'+fetchOne+'/'   
+                $.ajax({
+                    url: fetchUrl,  
+                    method: "GET",
+                    
+                    success: function (data) {
+                        tweetList = data.results       
+                        if (data.next){ nextTweetUrl = data.next } else { $("#loadmore").css('display', 'none') }       
+                        parseTweets()
+                        updateHashLinks()
+                    },
+                    error: function (data) {
+                        console.log('error')
+                    },
+                });
+            }
+            
+            // fetch all tweets or fetch detail
+            if(fetchOne){
+                fetchSingle(fetchOne)
+            }else{
+                fetchTweet()
+            }   
 
             // load more tweet, go to next api page
             $("#loadmore").click(function (event) {

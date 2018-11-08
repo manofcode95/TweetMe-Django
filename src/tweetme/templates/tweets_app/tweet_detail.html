@@ -4,32 +4,28 @@
 {{block.super}}Detail
 {%endblock%}
 
+{%block script%}
+<script>
+    $(document).ready(function () {
+        var fetchOne=$("#tweet-container").attr("data-id")
+        loadTweetContainer("tweet-container", fetchOne)
+        console.log(fetchOne)
+    })
+</script>
+
+{%endblock%}
+
 {%block content%}
-
 <div class="container">
-    <h1 class='display-4 text-center mt-5'>Detail</h1>
-    <div class="row mt-5">
-        <div class="col-sm-8 offset-md-2 py-3 border rounded bg-danger text-white text-center">
-            {{object.content}}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <p class='pt-2 text-center font-italic '>Via {{object.author}}, {{object.created_date}}
-                <a href='{%url "tweet_app:tweet_update" pk=object.pk%}' class='ml-3'>
-                    <i class="fas fa-user-edit"></i>
-                </a>
-                <a href='{%url "tweet_app:tweet_delete" pk=object.pk%}' class='ml-1'>
-                    <i class="fas fa-trash-alt"></i>
-                </a>
-                <a href='{%url "tweet_app:tweet_list"%}' class='ml-1'>
-                    <i class="fas fa-arrow-left"></i>
-                </a>
-            </p>
-        </div>
-    </div>
+    <h1 class='d-5 py-5 display-3 text-center'>Tweet Details</h1>
+    <!-- Use ajax to extract tweet list -->
+    <div id="tweet-container" data-url="/api/tweet/" data-id="{{object.pk}}"></div>
 
+    <div class="row my-2">
+        <div class="col-sm-3">
+            <p class="mb-0 text-center"><a href="" id="loadmore" class="text-center">Load more tweets</a></p>
+        </div>
+    </div>
 </div>
-
 
 {%endblock%}
