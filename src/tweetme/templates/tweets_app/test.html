@@ -1,51 +1,9 @@
-<div class="row mt-3">
-    <p class="mb-0 text-center">
-        <a href="' + tweetValue.author_url + '">' + tweetValue.author.username + '</a>
-    </p>
-    <p class="text-center">' + tweetValue.time_display + '</p>
-</div>
-
 <div class="col-sm-9">
     <div class="media">
         <div class="media-body">
-            <p class="mb-0 ">' + tweetContent + '(<a href="' + tweetValue.content_url + '">View</a> | <a class="retweet"
-                    href="' + tweetValue.retweet_url + '">Retweet</a> | <a class="like-btn" data-id="' + tweetValue.pk + '"
-                    href="#">' + verbLike + '(' + tweetValue.like_count + '</a>)</p>
-        </div>
-    </div>
-</div>
-
-
-<div class="row mt-3"></div>
-    <div class="col-sm-9">
-        <div class="media">
-            <div class="media-body">
-                <p class="mb-0 gray-text font-italic ">Retweet via <a href="/profile/chau/">chau</a></p>
-                <p>456 (<a href="/tweet/228/">View</a> | <a class="retweet" href="/api/tweet/227/retweet/">Retweet</a>
-                    | <a class="like-btn" data-id="228" href="#">Like(0</a>)</p>
-                <p></p>
-            </div>
-        </div>
-        <hr>
-    </div>
-
-</div>
-
-
-
-<div class="col-sm-3"></div>
-    <div class="row mt-3">
-        <p class="mb-0 text-center"><a href="/profile/python/">python</a></p>
-        <p class="text-center">21 hours, 40 minutes ago</p>
-    </div>
-    <div class="col-sm-9">
-        <div class="media">
-            <div class="media-body">
-                <p class="mb-0 gray-text font-italic ">Retweet via <a href="/profile/chau/">chau</a></p>
-                <p class="mb-0 ">undefined(<a href="/tweet/228/">View</a> | <a class="retweet" href="/api/tweet/228/retweet/">Retweet</a>
-                    | <a class="like-btn" data-id="228" href="#">Like(0</a>)</p>
-            </div>
-            <hr>
+             + preContent + 
+            <p class="mb-0 align-middle id="">
+                ' + tweetValue.content + '(<a href="' + tweetValue.content_url + '">View</a> | <a class="retweet" href="' + tweetValue.retweet_url + '">Retweet</a> | <a class="like-btn" data-id="' + tweetValue.pk + '" href="' + tweetValue.pk + '">' + verbLike + '(' + tweetValue.like_count + '</a>) | <a class="reply-btn" data-id="' + tweetValue.pk + '" data-user ="' + tweetValue.author.username + '" href="#">Reply</a>)</p>
         </div>
     </div>
 </div>

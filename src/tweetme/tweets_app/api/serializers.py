@@ -37,6 +37,7 @@ class ParentTweetModelSerializer(serializers.ModelSerializer):
         return obj.like.all().count()
 
 class TweetModelSerializer(serializers.ModelSerializer):
+    parent_id= serializers.CharField(write_only=True, required=False)
     author=UserDefaultSerializer(read_only=True)
     time_display=serializers.SerializerMethodField()
     author_url=serializers.SerializerMethodField()
@@ -46,10 +47,12 @@ class TweetModelSerializer(serializers.ModelSerializer):
     like_count= serializers.SerializerMethodField()
     did_like = serializers.SerializerMethodField()
 
+
     class Meta:
         model=Tweet
-        fields=['author','content', 'time_display', 'author_url', 'content_url',  'pk', 'retweet_url', 'like_count', 'did_like','reply', 'parent']
+        fields=['parent_id', 'author', 'content', 'time_display', 'author_url', 'content_url',  'pk', 'retweet_url', 'like_count', 'did_like','reply' , 'parent']
 
+        # read_only_fields=['reply']
     def get_time_display(self, obj):
         date_display= obj.created_date.strftime("%d %B")
         time_since= timesince(obj.created_date) +' ago'

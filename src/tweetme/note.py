@@ -142,3 +142,6 @@ In Serializer:
     def get_did_like(self, obj):
         request=self.context.get('request')
         user=request.user
+
+25. not really understand about parent_id. Check it later.
+26. 

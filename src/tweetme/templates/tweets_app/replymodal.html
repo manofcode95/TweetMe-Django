@@ -9,14 +9,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="">
-                    <textarea class='form-control' rows="4" name="modal-content"></textarea>
+                <form action="POST" class="tweet-form">
+                    {%csrf_token%}
+                    <textarea id="modalReply" class='form-control' rows="4" name="content"></textarea>
+                    <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" value="Reply">
+                    </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Reply</button>
-            </div>
+           
         </div>
     </div>
 </div>

@@ -90,12 +90,12 @@
             $(document.body).on("click", ".retweet", function (event) {
                 event.preventDefault()
                 var url = $(this).attr("href")
+                console.log(url)
                 $.ajax({
                     url: url,
                     method: "GET",
                     success: function (data) {
-                        if (initialUrl == '/api/tweet/') {
-                            console.log(url)
+                        if (initialUrl == '/api/tweet/') {                          
                             attachTweet(data, true)
                             updateHashLinks()
                         }
@@ -139,9 +139,17 @@
                 var this_ = $(this)
                 var parentId = this_.attr('data-id')
                 var username = this_.attr('data-user')
+                var content = this_.parent().parent().find("#content").text()
+                console.log(content)
                 $("#replyModal").modal({})
-
-
+                $("#modalReply").val('@'+username+' ')
+                $("#replyModal").on('shown.bs.modal', function(event){
+                    $(".tweet-form textarea").focus()
+                
+                })
+                $(".tweet-form textarea").after('<input type="hidden" name="parent_id" value ="'+parentId+'">')
+                $(".tweet-form textarea").after('<input type="hidden" name="reply" value ="true">')
+                $("#replyModal #replyModalLabel").text('Reply to: '+content)
             })
 
             // format the tweets
@@ -167,7 +175,7 @@
                 var tweetAuthorContent = '<div class= "col-sm-3" ><p class="mb-0 text-center"><a href="' + tweetValue.author_url + '">' + tweetValue.author.username + '</a></p><p class="text-center mb-0">' + tweetValue.time_display + '</p></div>'
 
                 // tweet box
-                var tweetContent = '<div class="col-sm-9"><div class="media"><div class="media-body">' + preContent + '<p class="mb-0 align-middle ">' + tweetValue.content + '(<a href="' + tweetValue.content_url + '">View</a> | <a class="retweet" href="' + tweetValue.retweet_url + '">Retweet</a> | <a class="like-btn" data-id="' + tweetValue.pk + '" href="' + tweetValue.pk + '">' + verbLike + '(' + tweetValue.like_count + '</a>) | <a class="reply-btn" data-id="' + tweetValue.pk + '" data-user ="' + tweetValue.author + '" href="#">Reply</a>)</p></div></div></div>'
+                var tweetContent = '<div class="col-sm-9"><div class="media"><div class="media-body">' + preContent + '<p class="mb-0 align-middle"><span id="content">' + tweetValue.content + '</span> (<a href="' + tweetValue.content_url + '">View</a> | <a class="retweet" href="' + tweetValue.retweet_url + '">Retweet</a> | <a class="like-btn" data-id="' + tweetValue.pk + '" href="' + tweetValue.pk + '">' + verbLike + '(' + tweetValue.like_count + '</a>) | <a class="reply-btn" data-id="' + tweetValue.pk + '" data-user ="' + tweetValue.author.username + '" href="#">Reply</a>)</p></div></div></div>'
 
                 var container = '<div class="row my-3">' + tweetAuthorContent + tweetContent + '</div><div class="row"><div class="col-3"></div><div class="col-9"><hr></div></div>'
                 return container
@@ -232,12 +240,12 @@
             // count characters of form
             var charsStart = 150
             var charsCurrent = 0
-            $("#form_id").append("<span id='tweetCharLeft'>" + charsStart + "</span>")
+            $(".tweet-form").append("<span id='tweetCharLeft'>" + charsStart + "</span>")
 
             // count characters of form, change text colors.
-            $("#form_id textarea").keyup(function (event) {
+            $(".tweet-form textarea").keyup(function (event) {
                 charsCurrent = charsStart - $(this).val().length
-                var charTag = $("#tweetCharLeft")
+                var charTag = $(".tweet-form").find("#tweetCharLeft")
                 charTag.text(charsCurrent)
                 if (charsCurrent > 0) {
                     charTag.addClass('green-text')
@@ -250,11 +258,12 @@
             })
 
 
-            // count characters of form, show number
-            $("#form_id").submit(function (event) {
+
+            $(".tweet-form").submit(function (event) {
                 event.preventDefault()
                 var this_ = $(this)
                 var formData = this_.serialize()
+                console.log(formData)
                 if (charsCurrent >= 0) {
                     $.ajax({
                         url: createApiTweet,
@@ -265,6 +274,7 @@
                             this_.find("textarea").val("")
                             attachTweet(data, true)
                             updateHashLinks()
+                            $('#replyModal').modal('hide')
                         },
                         error: function (data) {
                             console.log("error")
