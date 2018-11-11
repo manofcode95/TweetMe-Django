@@ -16,22 +16,19 @@
 
 {%if request.GET.q%}
 <div class="container">
-
     <div class="row">
         <div class="col mt-5 lead">
-            <p>Result for: </p>
+            <p>Result for: {{request.GET.q}}</p>
         </div>
 
     </div>
     <hr>
-
     <div class="row">
         <div class="col-sm-9">
             <h3 class='d-5 py-5 display-4 text-center'>Tweets</h3>
-            {{object}}
-            <!-- Use ajax to extract tweet list -->
-            <div id="tweet-container" data-url="/api/tags/{{object.tag}}"></div>
 
+            <!-- Use ajax to extract tweet list -->
+            <div id="tweet-container" data-url="/api/tweet/search/"></div>
             <div class="row my-2">
                 <div class="col-sm-3">
                     <p class="mb-0 text-center"><a href="" id="loadmore" class="text-center">Load more tweets</a></p>
@@ -41,9 +38,24 @@
             <p>No tweets</p>
             {%endif%}
         </div>
+
+        <div class="col sm-3">
+            <h3 class='d-5 py-5 display-4 text-center'>Users</h3>
+            <ol>
+                {%for user in user_list%}
+                <li>
+                    <a href="{%url 'profile_app:user_detail' username=user.username%}">{{user.username}}</a>
+                </li>
+                {%empty%}
+                No users currently found
+                {%endfor%}
+            </ol>
+
+        </div>
     </div>
 </div>
 
+<!-- <a href="" id="loadmore" class="text-center">Load more tweets</a> -->
 
 
 {%endblock%}

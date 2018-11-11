@@ -21,3 +21,20 @@
 .gray-text {
   color: gray;
 }
+
+/* .row {
+  align-items: center;
+} */
+
+.media-focus {
+  background: #efefef;
+}
+
+.search-btn{
+  margin-left:-5px;
+}
+
+/* .search-box{
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+} */

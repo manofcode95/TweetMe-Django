@@ -17,3 +17,10 @@ class RegisterForm(forms.Form):
         if qs.exists():
             raise forms.ValidationError('Please choose other username')
         return username
+    
+    def clean_email(self):
+        email=self.cleaned_data.get('email')
+        qs= User.objects.filter(email=email)
+        if qs.exists():
+            raise forms.ValidationError('Please choose other email')
+        return email

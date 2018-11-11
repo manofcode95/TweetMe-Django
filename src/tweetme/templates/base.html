@@ -43,7 +43,7 @@
 
             function doneSearchTyping() {
                 if (searchQuery) {
-                    var url = '/tweet/list/?q=' + searchQuery
+                    var url = '/search/?q=' + searchQuery
                     document.location.href = url;
                 }
             }
@@ -95,7 +95,7 @@
                     url: url,
                     method: "GET",
                     success: function (data) {
-                        if (initialUrl == '/api/tweet/') {                          
+                        if (initialUrl == '/api/tweet/') {
                             attachTweet(data, true)
                             updateHashLinks()
                         }
@@ -112,19 +112,17 @@
                 var this_ = $(this)
                 var tweetId = this_.attr('data-id')
                 var likeUrl = '/api/tweet/' + tweetId + '/like'
-                console.log(likeUrl)
+
 
                 $.ajax({
                     url: likeUrl,
                     method: "GET",
                     success: function (data) {
-                        console.log('it works')
                         if (data.liked) {
                             this_.text("Liked");
-                            console.log('1')
+
                         } else {
                             this_.text("Unliked");
-                            console.log('2')
                         }
                     },
                     error: function (data) {
@@ -139,43 +137,56 @@
                 var this_ = $(this)
                 var parentId = this_.attr('data-id')
                 var username = this_.attr('data-user')
+                var parentUsername = (this_).parent().parent().find("#data-parent").text()
                 var content = this_.parent().parent().find("#content").text()
-                console.log(content)
                 $("#replyModal").modal({})
-                $("#modalReply").val('@'+username+' ')
-                $("#replyModal").on('shown.bs.modal', function(event){
+                if (parentUsername) { $("#modalReply").val('@' + parentUsername + ' ') } else { $("#modalReply").val('@' + username + ' ') }
+                $("#replyModal").on('shown.bs.modal', function (event) {
                     $(".tweet-form textarea").focus()
-                
+
                 })
-                $(".tweet-form textarea").after('<input type="hidden" name="parent_id" value ="'+parentId+'">')
+                $(".tweet-form textarea").after('<input type="hidden" name="parent_id" value ="' + parentId + '">')
                 $(".tweet-form textarea").after('<input type="hidden" name="reply" value ="true">')
-                $("#replyModal #replyModalLabel").text('Reply to: '+content)
+                $("#replyModal #replyModalLabel").text('Reply to: ' + content)
             })
 
             // format the tweets
             function formatTweet(tweetValue) {
+                var replyId = tweetValue.pk
+                if (tweetValue.parent) {
+                    replyId = tweetValue.parent.pk
+                }
+
                 // show like or liked after loading the page
                 var verbLike;
                 if (tweetValue.did_like) { verbLike = 'Liked' } else { verbLike = 'Like' }
 
+                // singel out tweet
+                var singelOut = '<div class="media-body">'
+                if (fetchOne == tweetValue.pk) { singelOut = '<div class="media-body media-focus">' }
+
                 // check if the tweet was retweeted
                 var preContent = ''
                 var isReply = tweetValue.reply
+
+
                 if (tweetValue.parent && !isReply) {
                     tweetValue.pk = tweetValue.parent.pk
                     tweetValue.like_count = tweetValue.parent.like_count
-                    preContent = '<p class="mb-0 gray-text font-italic ">Retweet via <a href="' + tweetValue.parent.author_url + '">' + tweetValue.parent.author.username + '</a></p>'
+                    preContent = '<p class="mb-0 gray-text font-italic ">Retweet via <a href="' + tweetValue.parent.author_url + '"><span id="data-parent">' + tweetValue.parent.author.username + '</span></a></p>'
                 } else if (tweetValue.parent && isReply) {
                     tweetValue.pk = tweetValue.parent.pk
                     tweetValue.like_count = tweetValue.parent.like_count
-                    preContent = '<p class="mb-0 gray-text font-italic ">Reply to @<a href="' + tweetValue.parent.author_url + '">' + tweetValue.parent.author.username + '</a></p>'
+                    preContent = '<p class="mb-0 gray-text font-italic">Reply to @<a href="' + tweetValue.parent.author_url + '"><span id="data-parent">' + tweetValue.parent.author.username + '</span></a></p>'
                 }
 
+
                 // author box
+                console.log(tweetValue)
                 var tweetAuthorContent = '<div class= "col-sm-3" ><p class="mb-0 text-center"><a href="' + tweetValue.author_url + '">' + tweetValue.author.username + '</a></p><p class="text-center mb-0">' + tweetValue.time_display + '</p></div>'
 
                 // tweet box
-                var tweetContent = '<div class="col-sm-9"><div class="media"><div class="media-body">' + preContent + '<p class="mb-0 align-middle"><span id="content">' + tweetValue.content + '</span> (<a href="' + tweetValue.content_url + '">View</a> | <a class="retweet" href="' + tweetValue.retweet_url + '">Retweet</a> | <a class="like-btn" data-id="' + tweetValue.pk + '" href="' + tweetValue.pk + '">' + verbLike + '(' + tweetValue.like_count + '</a>) | <a class="reply-btn" data-id="' + tweetValue.pk + '" data-user ="' + tweetValue.author.username + '" href="#">Reply</a>)</p></div></div></div>'
+                var tweetContent = '<div class="col-sm-9"><div class="media">' + singelOut + preContent + '<p class="mb-0 align-middle"><span id="content">' + tweetValue.content + '</span> (<a href="' + tweetValue.content_url + '">View</a> | <a class="retweet" href="' + tweetValue.retweet_url + '">Retweet</a> | <a class="like-btn" data-id="' + tweetValue.pk + '" href="' + tweetValue.pk + '">' + verbLike + '(' + tweetValue.like_count + '</a>) | <a class="reply-btn" data-id="' + replyId + '" data-user ="' + tweetValue.author.username + '" href="#">Reply</a>)</p></div></div></div>'
 
                 var container = '<div class="row my-3">' + tweetAuthorContent + tweetContent + '</div><div class="row"><div class="col-3"></div><div class="col-9"><hr></div></div>'
                 return container
@@ -211,8 +222,10 @@
                 var fetchUrl;
                 if (!url) {
                     fetchUrl = initialUrl
+                    console.log(fetchUrl)
                 } else {
                     fetchUrl = url
+                    console.log(fetchUrl)
                 }
                 $.ajax({
                     url: fetchUrl,
@@ -233,14 +246,14 @@
 
             // fetch  tweet detail
             function fetchSingle(fetchOne) {
-                var fetchUrl='/api/tweet/'+fetchOne+'/'   
+                var fetchUrl = '/api/tweet/' + fetchOne + '/'
                 $.ajax({
-                    url: fetchUrl,  
+                    url: fetchUrl,
                     method: "GET",
-                    
+
                     success: function (data) {
-                        tweetList = data.results       
-                        if (data.next){ nextTweetUrl = data.next } else { $("#loadmore").css('display', 'none') }       
+                        tweetList = data.results
+                        if (data.next) { nextTweetUrl = data.next } else { $("#loadmore").css('display', 'none') }
                         parseTweets()
                         updateHashLinks()
                     },
@@ -249,13 +262,13 @@
                     },
                 });
             }
-            
+
             // fetch all tweets or fetch detail
-            if(fetchOne){
+            if (fetchOne) {
                 fetchSingle(fetchOne)
-            }else{
+            } else {
                 fetchTweet()
-            }   
+            }
 
             // load more tweet, go to next api page
             $("#loadmore").click(function (event) {

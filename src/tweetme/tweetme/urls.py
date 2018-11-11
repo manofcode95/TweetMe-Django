@@ -19,8 +19,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from tweets_app import views
-from .views import user_login, user_register, user_logout
+from .views import RegisterView, SearchView
 from hashtags_app.views import HashTagView
+from hashtags_app.api.views import HashTagAPIView
 urlpatterns = [
     # url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
     url(r'^$', views.TweetList.as_view(), name='home'),
@@ -28,17 +29,19 @@ urlpatterns = [
     # tweets_app
     url(r'^tweet/', include('tweets_app.urls')),
     url(r'^api/tweet/', include('tweets_app.api.urls', namespace='tweet-api')),
-    # reply_app
-    # url(r'^reply/', include('reply_app.api.urls')),
+    #search
+    url(r'^search/$', SearchView.as_view(), name='search'),
     # account_app
     url(r'^profile/', include('account_app.urls')),
     url(r'^api/', include('account_app.api.urls')),
+    url(r'^accounts/', include('django.contrib.auth.urls')),
     # hashtags_app
     url(r'^tags/(?P<hashtag>[\w-]+)/$', HashTagView.as_view(), name='hashtag'),
+    url(r'^api/tags/(?P<hashtag>[\w-]+)/$', HashTagAPIView.as_view(), name='hashtag'),
     # login,logout,register
-    url(r'^login/$', user_login, name='login'),
-    url(r'^register/$', user_register, name='register'),
-    url(r'logout/$', user_logout, name='logout'),
+    url(r'^accounts/register/$', RegisterView.as_view(), name='register'),
+
+    
 ]
 
 if settings.DEBUG:

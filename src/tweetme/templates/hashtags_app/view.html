@@ -1,24 +1,46 @@
 {%extends 'base.html'%}
+
+{%block title%}
+{{block.super}}Tags{%endblock%}
+
+{%block script%}
+<script>
+    $(document).ready(function () {
+        loadTweetContainer("tweet-container")
+    })
+</script>
+
+{%endblock%}
+
 {%block content%}
+
+
 <div class="container">
-    <h1 class='d-5 py-5 display-3 text-center'>All tweets</h1>
-    <!-- Use ajax to extract tweet list -->
-    <div id="tweet-container">
-        {%for tweet in object.get_tweets%}
-        <div class="row mt-5">
-            <div class="col-sm-3">
-                <p class="mb-0 text-center">{{tweet.author}}</p>
-                <p class="text-center">{{tweet.created_date}}</p>
-            </div>
-            <div class="col-sm-9">
-                <div class="media">
-                    <div class="media-body">
-                        <p class="mb-0 ">{{tweet.content}}(<a href="#">View</a>)</p>
-                        </p>
-                    </div>
-                </div>
-                <hr>
-            </div>
+
+    <div class="row">
+        <div class="col mt-5 lead">
+            <p>Result for: #{{object.tag}}</p>
         </div>
-        {%endfor%}
-        {%endblock%}
+
+    </div>
+    <hr>
+
+    <div class="row">
+        <div class="col-sm-9">
+            <h3 class='d-5 py-5 display-4 text-center'>Tags</h3>
+            <!-- Use ajax to extract tweet list -->
+            <div id="tweet-container" data-url="/api/tags/{{object.tag}}"></div>
+
+            <div class="row my-2">
+                <div class="col-sm-3">
+                    <p class="mb-0 text-center"><a href="" id="loadmore" class="text-center">Load more tweets</a></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+{%endblock%}

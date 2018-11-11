@@ -38,14 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rest_framework',
 
     'tweets_app',
     'account_app',
     'hashtags_app',
-    # 'reply_app',
+    'crispy_forms',
+    'rest_framework',
+    
+    
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -132,4 +135,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static-test/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static-storage")]
+STATIC_ROOT= os.path.join(os.path.dirname(BASE_DIR), "static-serve")
+
+LOGIN_URL = "accounts/login/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL

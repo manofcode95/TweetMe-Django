@@ -22,7 +22,7 @@ class Retweet(View):
             return redirect('/')
         return redirect(tweet.get_absolute_url())
 
-class TweetList(ListView):
+class TweetList(LoginRequiredMixin, ListView):
     paginate_by=5
     #  Search
     def get_queryset(self,*args,**kwargs): 

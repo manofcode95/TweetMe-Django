@@ -1,4 +1,12 @@
-<form id="navbar-search-form" class="form-inline my-2 my-lg-0" action={%url 'tweet_app:tweet_list' %} method="GET">
-    <input class="form-control mr-sm-2" type="search" name='q' placeholder="Search" aria-label="Search" value={{request.GET.q}}>
-    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+<form id="navbar-search-form" class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="GET">
+    <input class="form-control mr-sm-2 " type="search" name='q' placeholder="Seadrch" aria-label="Search" value={{request.GET.q}}>
+    <button class="btn btn-outline-light my-2 my-sm-0 search-btn" type="submit">Search</button>
 </form>
+
+<!-- <div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username"
+        aria-describedby="button-addon2">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+    </div>
+</div> -->

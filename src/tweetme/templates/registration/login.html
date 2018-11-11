@@ -1,0 +1,48 @@
+{% extends "base.html" %} {%block script%}
+<script>
+  $(document).ready(function () {
+    $('form input').attr('class', 'form-control');
+  });
+</script>
+{%endblock%}
+
+{% block content %}
+<div class="container">
+  <h1 class='d-5 mt-5 display-3 text-center'>Log In</h1>
+  <div class="row">
+    <div class="col-sm-6 offset-3 text-center mt-5">
+      {% if form.errors %}
+      <p>Your username and password didn't match. Please try again.</p>
+      {% endif %} {% if next %} {% if user.is_authenticated %}
+      <p>
+        Your account doesn't have access to this page. To proceed, please login
+        with an account that has access.
+      </p>
+      {% else %}
+      <p>Please login to see this page.</p>
+      {% endif %} {% endif %}
+
+      <form method="post" action="{% url 'login' %}">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="InputEmail1">{{ form.username.label_tag }}</label>{{ form.username }}
+
+        </div>
+
+        <div class="form-group">
+          <label for="InputPassword1">{{ form.password.label_tag }}</label>{{ form.password }}
+
+
+          <button type="submit" class="btn btn-primary mt-4">Submit</button>
+          <input type="hidden" name="next" value="{{ next }}" />
+      </form>
+
+      {# Assumes you setup the password_reset view in your URLconf #}
+      <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+
+      {% endblock %}
+    </div>
+  </div>
+</div>

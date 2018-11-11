@@ -1,0 +1,7 @@
+<ul>
+    {%for user in object_list%}
+    <li>
+        <a href="{%url 'profile_app:user_detail' username=user.user.username%}">{{user.user.username}}</a>
+    </li>
+    {%endfor%}
+</ul>

@@ -72,6 +72,8 @@ class TweetListAPIView(generics.ListAPIView):
             im_following=self.request.user.profile.following.all()
             my_user=User.objects.get(username=self.request.user.username)
             qs=Tweet.objects.filter(Q(author__in=im_following)|Q(author=my_user))
+        # query=self.kwargs.get('q', None)
+        # qs.filter(Q(author__in=query)|Q(author=query))
         return qs  
 
  

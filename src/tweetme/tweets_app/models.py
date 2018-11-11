@@ -53,7 +53,19 @@ class Tweet(models.Model):
         if self.parent:
             return True
         return False
-    
+    def get_parent(self):
+        the_parent=self
+        if self.parent:
+            the_parent=self.parent
+        return the_parent
+
+    def get_children(self):
+        parent=self.get_parent()
+        children_obj = Tweet.objects.filter(parent=parent)  
+        parent_obj = Tweet.objects.filter(pk=parent.pk)  
+        qs = (children_obj|parent_obj).distinct().order_by('pk')
+        return qs
+
     class Meta:
         ordering=['-id']
 

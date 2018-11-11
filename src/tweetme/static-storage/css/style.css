@@ -22,6 +22,15 @@
   color: gray;
 }
 
-.row {
+/* .row {
   align-items: center;
+} */
+
+.media-focus {
+  background: #efefef;
 }
+
+.search-btn{
+  margin-left:-12px;
+}
+

@@ -1,0 +1,19 @@
+{%extends 'base.html'%}
+
+{%block title%}
+{{block.super}}Register{%endblock%}
+
+{%block content%}
+
+
+<div class="container">
+    <h1 class='d-5 py-5 display-3 text-center'>Register</h1>
+    <div class="row">
+        <!-- <div class="col-sm-3"></div> -->
+        <div class="col-sm-8 offset-sm-2">
+            {%include 'tweets_app/form.html' with form=form form_class="register-form" btn_title='Register'%}
+        </div>
+    </div>
+
+
+    {%endblock%}

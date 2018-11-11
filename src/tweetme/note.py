@@ -144,4 +144,4 @@ In Serializer:
         user=request.user
 
 25. not really understand about parent_id. Check it later.
-26. 
+26. Get the query "q" from request.GET not kwargs

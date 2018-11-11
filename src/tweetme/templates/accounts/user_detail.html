@@ -1,5 +1,5 @@
 {%extends 'base.html'%}
-
+{%load recommended%}
 {%block script%}
 <script>
     // this functions helps you get the search query q
@@ -28,24 +28,6 @@
         </div>
     </div>
 
-
-    <!-- {%for tweet in user.tweet_set.all%}
-        <div class="row mt-5">
-            <div class="col-sm-3">
-                <p class="mb-0 text-center">{{tweet.author}}</p>
-                <p class="text-center">{{tweet.created_date}}</p>
-            </div>
-            <div class="col-sm-9">
-                <div class="media">
-                    <div class="media-body">
-                        <p class="mb-0 ">{{tweet.content}}(<a href="#">View</a>)</p>
-                        </p>
-                    </div>
-                </div>
-                <hr>
-            </div>
-        </div>
-        {%endfor%} -->
 
 
     <!-- Show who you follow -->
@@ -76,6 +58,20 @@
             {%else%}
             <p>No one follows</p>
             {%endif%}
+        </div>
+
+        <!-- Show recommended users -->
+        <div class="col-12">
+            <h2>Recommended <small>({{recommended.count}})</small>:</h2>
+            {%recommended user=request.user%}
+            <!-- <ul>
+                {%for user in recommended%}
+                <li>
+                    <a href="{%url 'profile_app:user_detail' username=user.user.username%}">{{user.user.username}}</a>
+                </li>
+                {%endfor%}
+            </ul> -->
+
         </div>
     </div>
 </div>
